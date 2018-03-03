@@ -3,7 +3,7 @@ class Variable():
     def __init__(self, var):
         self.var = var
 
-    def groupTerms(self, test): #takes [6x, 4x, 6y] and makes it [6x, 4x]
+    def groupTerms(self, test, xterm): #takes [6x, 4x, 6y] and makes it [6x, 4x]
         del xterm[:]
         for i in range(len(test)):
             if self.var in test[i]:
@@ -21,47 +21,53 @@ class Variable():
 
 
 #------methods------
+
+#Track variables -- ex. find x's
 def trackVar(var, varObjects, testArray):
     for x in range(len(testArray)):
-        if test[x].isalpha(): #check if char is alphabetical
-            if len(varObjects) != 0:
-                if (testArray[x] in var) == False: #don't put same var in twice
-	            print(testArray[x],'is a variable.')
-                    print(testArray[x])
-                    b = testArray[x] #store char as variable
-                    var.append(b)
-                    x = Variable(b) #add an object to reference var later
-                    varObjects.append(x)
-            else: #same stuff
-                print(testArray[x],'is a variable.')
+        print(testArray[x].isalpha())
+        if testArray[x].isalpha(): #check if char is alphabetical
+            if (testArray[x] in var) == False: #don't put same var in twice
+	        print(testArray[x],'is a variable.')
                 print(testArray[x])
-                b = testArray[x]
+                b = testArray[x] #store char as variable
                 var.append(b)
-                x = Variable(b)
+                x = Variable(b) #add an object to reference var later
                 varObjects.append(x)
+
+
+def combineLikeTerms(test):
+    xterm = []
+    varObjects = []
+    var = []
+
+    #split up characters
+    testArray = list(test)
+    print(testArray)
+
+    trackVar(var, varObjects, testArray)
+
+
+    #get rid of spaces
+    test = test.split(" ")
+    print(test)
+
+    #combine like terms
+    for i in range(len(varObjects)):
+        varObjects[i].RejoinVar(varObjects[i].combineTerms((varObjects[i].groupTerms(test, xterm))))
+
           
 
 #------main------
 #declare stuff
 test = raw_input("Enter an expression: ")
 print(test)
-xterm = []
-varObjects = []
-var = []
-
-#split up characters
-testArray = list(test)
+testArray = test.split(" = ")
 print(testArray)
 
-trackVar(var, varObjects, testArray)
+for i in range(len(testArray)):
+    exp = testArray[i]
+    combineLikeTerms(exp)
 
-#Track variables -- ex. find x's
 
-#get rid of spaces
-test = test.split(" ")
-print(test)
-
-#combine like terms
-for i in range(len(varObjects)):
-    varObjects[i].RejoinVar(varObjects[i].combineTerms((varObjects[i].groupTerms(test))))
 
