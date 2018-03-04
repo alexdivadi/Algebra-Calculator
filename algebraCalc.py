@@ -11,14 +11,14 @@ class Variable():
         return (xterm)
     
     def combineTerms(self, array): #takes [6x, 4x] and makes it 10.0
-        array = [s.strip(self.var) for s in array] # seperate var from coeff
-        array = [s.replace(self.var, '') for s in array] # remove var
-        print(array)
+        array1 = [s.strip(self.var) for s in array] # seperate var from coeff
+        array1 = [s.replace(self.var, '') for s in array] # remove var
+        print(array1)
         x = 0
-        for i in range(len(array)):
+        for i in range(len(array1)):
             check = True
             try:
-                x = x + float(array[i])
+                x = x + float(array1[i])
             except ValueError:
                 continue
         print(x)
