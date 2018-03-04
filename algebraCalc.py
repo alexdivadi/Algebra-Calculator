@@ -1,3 +1,4 @@
+import math
 #------classes-------
 class Variable():
     def __init__(self, var):
@@ -111,27 +112,114 @@ def combineLikeTerms(test, con, variables):
     for i in range(len(varObjects)):
         v = varObjects[i].combineTerms(varObjects[i].groupTerms(test, xterm))
         variables.append(v)
-
-
+def OneEquation(Leftx, Leftc, Rightx, Rightc):
+	Leftx[0] -= Rightx[0]
+	Rightx[0] -= Rightx[0]
+	Rightc[0] -= Leftc[0]
+	Leftc[0] -= Leftc[0]
+	Rightc[0] = Rightc[0]/Leftx[0]
+	print("Answer is %s" % Rightc[0])
+def TwoEquation(Leftx, Leftc, Rightx, Rightc, Leftx2, Leftc2, Rightx2, Rightc2):
+	Leftx[0] -= Rightx[0]  
+	Leftx[1] -= Rightx[1] 	#Leftx[0] + Leftx[1] = Rightc[0]
+	Rightc[0] -= Leftc[0]  	#Leftx2[0] + Leftx2[1] = Rightc2[0]
+	Leftx2[0] -= Rightx2[0]
+	Leftx2[1] -= Rightx2[1]
+	Rightc2[0] -= Leftc2[0]
+	CoeffMatrix = Leftx[0] * Leftx2[1] - Leftx[1] * Leftx2[0]
+	X_Matrix = Rightc[0] * Leftx2[1] - Leftx[1] * Rightc2[0]
+	Y_Matrix = Leftx[0] * Rightc2[0] - Rightc[0] * Leftx2[0]
+	print("X value is: " + str(X_Matrix/CoeffMatrix) +" Y value is: " + str(Y_Matrix/CoeffMatrix))
+def	Qudratic(Leftx, Leftc, Rightx, Rightc):
+	Leftx[0] -= Rightx[0]
+	Leftx[1] -= Rightx[1]
+	Leftc[0] -=  Rightc[0]
+	print(Leftx[0], Leftx[1], Leftc[0])
+	if math.sqrt(Leftx[1] * Leftx[1] - 4 * Leftx[0] * Leftc[0]) > 0:
+		if math.sqrt(Leftx[1] * Leftx[1] - 4 * Leftx[0] * Leftc[0]).is_integer():
+			Root = math.sqrt(Leftx[1] * Leftx[1] - 4 * Leftx[0] * Leftc[0])
+		print(str(Root) +" is root")
+		print("Answer is " + str((((-1 * Leftx[1]) + Root) / 2 * Leftx[0])) + " and")
+		print(((-1 * Leftx[1]) - Root) / 2 * Leftx[0])
+	else:
+		print("No real solutions")
 #------main------
 #declare stuff
 leftcon = []
 leftvar = []
 rightcon = []
 rightvar = []
-test = raw_input("Enter an equation: ")
-testArray = test.split(" = ")
+leftcon2 = []
+leftvar2 = []
+rightcon2 = []
+rightvar2 = []
+Num = raw_input("How many equations:  ")
 
-exp = testArray[0]
-combineLikeTerms(exp, leftcon, leftvar)
-exp = testArray[1]
-combineLikeTerms(exp, rightcon, rightvar)
-print("Left side of equation:")
-print("    Variables: %s" % leftvar)
-print("    Constants: %s" % leftcon)
-print("Right side of equation:")
-print("    Variables: %s" % rightvar)
-print("    Constants: %s" % rightcon)
+if Num == "1":
+	Degree = raw_input("Is it quadratic? Y/N:  ")
+	if Degree == "N":
+		test = raw_input("Enter an equation: ")
+		testArray = test.split(" = ")
+
+		exp = testArray[0]
+		combineLikeTerms(exp, leftcon, leftvar)
+		exp = testArray[1]
+		combineLikeTerms(exp, rightcon, rightvar)
+		if rightvar == []:
+			rightvar = [0]
+		if leftvar == []:
+			leftvar = [0]
+		OneEquation(leftvar, leftcon, rightvar, rightcon)
+	elif Degree == "Y":
+		test = raw_input("Enter an equation:  ")
+		testArray = test.split(" = ")
+
+		exp = testArray[0]
+		combineLikeTerms(exp, leftcon, leftvar)
+		exp = testArray[1]
+		combineLikeTerms(exp, rightcon, rightvar)
+		if rightvar == []:
+			rightvar = [0, 0]
+		if leftvar == []:
+			leftvar = [0, 0]
+		Qudratic(leftvar, leftcon, rightvar, rightcon)
+	else: 
+		print("Invalid input")
+elif Num == "2":
+	#First Equation
+	test = raw_input("Enter an equation: ")
+	testArray = test.split(" = ")
+
+	exp = testArray[0]
+	combineLikeTerms(exp, leftcon, leftvar)
+	exp = testArray[1]
+	combineLikeTerms(exp, rightcon, rightvar)
+	if rightvar == []:
+		rightvar = [0, 0]
+	if leftvar == []:
+		leftvar = [0, 0]
+	print("1st equation", leftvar, leftcon, rightvar, rightcon)
+	#Second Equation
+	test2 = raw_input("Enter another equation:  ")
+	testArray2 = test2.split(" = ")
+
+	exp2 = testArray2[0]
+	combineLikeTerms(exp2, leftcon2, leftvar2)
+	exp2 = testArray2[1]
+	combineLikeTerms(exp2, rightcon2, rightvar2)
+	if rightvar2 == []:
+		rightvar2 = [0, 0]
+	if leftvar2 == []:
+		leftvar2 = [0, 0]
+	print(leftvar, leftcon, rightvar, rightcon, leftvar2, leftcon2, rightvar2, rightcon2)
+	TwoEquation(leftvar, leftcon, rightvar, rightcon, leftvar2, leftcon2, rightvar2, rightcon2)
+else: 
+	print("Invalid input")
+	
+    
+
+
+
 
 
 
