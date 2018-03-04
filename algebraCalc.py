@@ -15,59 +15,90 @@ class Variable():
         print(array)
         print(sum(float(i) for i in array))
         return sum(float(i) for i in array)
-    
-    def RejoinVar(self, coeff): #takes 10.0 and makes it 10.0x
-        print str(coeff) + self.var
 
 
 #------methods------
 
 #Track variables -- ex. find x's
-def trackVar(var, varObjects, testArray):
+def trackVar(var, varObjects, testArray, k):
     for x in range(len(testArray)):
-        print(testArray[x].isalpha())
         if testArray[x].isalpha(): #check if char is alphabetical
             if (testArray[x] in var) == False: #don't put same var in twice
 	        print(testArray[x],'is a variable.')
                 print(testArray[x])
+                a = x
                 b = testArray[x] #store char as variable
                 var.append(b)
-                x = Variable(b) #add an object to reference var later
-                varObjects.append(x)
+                a = Variable(b) #add an object to reference var later
+                varObjects.append(a)
+        if testArray[x].isdigit(): #check if char is constant
+            print("There was a constant!")
+            i = x
+            print("i =",i)
+            while i <= len(testArray):
+                if testArray[i].isalpha():
+                    break
+                elif testArray[i].isdigit():
+                    i = i + 1
+                    try:
+                        testArray[i].isdigit()
+                    except IndexError:
+                        print("".join(testArray[x:(i)]))
+                        k.append("".join(testArray[x:(i)]))
+                        print(k)
+                        break
+                else:
+                    print("".join(testArray[x:(i)]))
+                    k.append("".join(testArray[x:(i)]))
+                    print(k)
+                    break
+#Combine Constants             
+def combineConstants(k):
+    return (sum(float(i) for i in k))
 
-
-def combineLikeTerms(test):
+def combineLikeTerms(test, con, variables):
     xterm = []
     varObjects = []
     var = []
-
+    k = []
+    
     #split up characters
     testArray = list(test)
     print(testArray)
-
-    trackVar(var, varObjects, testArray)
-
-
+    
+    trackVar(var, varObjects, testArray, k)
+    
     #get rid of spaces
     test = test.split(" ")
     print(test)
-
     #combine like terms
+    con.append(combineConstants(k))
     for i in range(len(varObjects)):
-        varObjects[i].RejoinVar(varObjects[i].combineTerms((varObjects[i].groupTerms(test, xterm))))
+        v = varObjects[i].combineTerms(varObjects[i].groupTerms(test, xterm))
+        variables.append(v)
 
-          
 
 #------main------
 #declare stuff
-test = raw_input("Enter an expression: ")
+leftcon = []
+leftvar = []
+rightcon = []
+rightvar = []
+test = raw_input("Enter an equation: ")
 print(test)
 testArray = test.split(" = ")
 print(testArray)
 
-for i in range(len(testArray)):
-    exp = testArray[i]
-    combineLikeTerms(exp)
+exp = testArray[0]
+combineLikeTerms(exp, leftcon, leftvar)
+exp = testArray[1]
+combineLikeTerms(exp, rightcon, rightvar)
+print("Left side of equation:")
+print("    Variables:", leftvar)
+print("    Constants:", leftcon)
+print("Right side of equation:")
+print("    Variables:", rightvar)
+print("    Constants:", rightcon)
 
 
 
