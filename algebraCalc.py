@@ -163,11 +163,14 @@ leftcon2 = []
 leftvar2 = []
 rightcon2 = []
 rightvar2 = []
-Num = raw_input("How many equations:  ")
+retry = 'y'
+print 'Welcome to the Algebra Calculator!'
+while retry.lower() == 'y':
+    Num = raw_input("How many equations:  ")
 
-if Num == "1":
-	Degree = raw_input("Is it quadratic? Y/N:  ")
-	if Degree.upper() == "N":
+    if Num == "1":
+	    Degree = raw_input("Is it quadratic? Y/N:  ")
+	    if Degree.upper() == "N":
 		test = raw_input("Enter an equation: ")
                 print(test)
 		testArray = test.split(" = ")
@@ -181,7 +184,7 @@ if Num == "1":
 		if leftvar == []:
 			leftvar = [0]
 		OneEquation(leftvar, leftcon, rightvar, rightcon)
-	elif Degree.upper() == "Y":
+	    elif Degree.upper() == "Y":
 		test = raw_input("Enter an equation:  ")
                 print(test)
 		testArray = test.split(" = ")
@@ -195,9 +198,9 @@ if Num == "1":
 		if leftvar == []:
 			leftvar = [0, 0]
 		Qudratic(leftvar, leftcon, rightvar, rightcon)
-	else: 
+	    else: 
 		print("Invalid input")
-elif Num == "2":
+    elif Num == "2":
 	#First Equation
 	test = raw_input("Enter an equation: ")
         print(test)
@@ -227,10 +230,11 @@ elif Num == "2":
 		leftvar2 = [0, 0]
 	print(leftvar, leftcon, rightvar, rightcon, leftvar2, leftcon2, rightvar2, rightcon2)
 	TwoEquation(leftvar, leftcon, rightvar, rightcon, leftvar2, leftcon2, rightvar2, rightcon2)
-else: 
+    else: 
 	print("Invalid input")
 	
-    
+    retry = raw_input("Would you like to go again? (y/n): ")
+print ("Have a nice day!!!")
 
 
 
