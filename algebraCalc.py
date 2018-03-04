@@ -14,7 +14,6 @@ class Variable():
     def combineTerms(self, array): #takes [6x, 4x] and makes it 10.0
         array1 = [s.strip(self.var) for s in array] # seperate var from coeff
         array1 = [s.replace(self.var, '') for s in array] # remove var
-        print(array1)
         x = 0
         for i in range(len(array1)):
             check = True
@@ -22,7 +21,6 @@ class Variable():
                 x = x + float(array1[i])
             except ValueError:
                 continue
-        print(x)
         return x 
 
     def rejoin(self, total):
@@ -51,7 +49,6 @@ def trackVar(var, varObjects, testArray, k):
                             if (whole in var) == False:
                                 a = x
                                 b = whole
-                                print(b)
                                 var.append(b)
                                 a = Variable(b)
                                 varObjects.append(a)
@@ -62,7 +59,6 @@ def trackVar(var, varObjects, testArray, k):
                         if (whole in var) == False: #don't put same var in twice
                             a = x
                             b = whole #store char as variable
-                            print(b)
                             var.append(b)
                             a = Variable(b) #add an object to reference var later
                             varObjects.append(a)
@@ -82,12 +78,20 @@ def trackVar(var, varObjects, testArray, k):
                         try:
                             testArray[i].isdigit()
                         except IndexError:
-                            k.append("".join(testArray[x:(i)]))
-                            skip = len("".join(testArray[x:(i)]))
+                            if testArray[x-1] == "-":
+                                filler = "".join(testArray[x-1:(i)])
+                                k.append(filler)
+                            else:
+                                k.append("".join(testArray[x:(i)]))
+                            skip = len("".join(testArray[x:(i-1)]))
                             break
                     else:
-                        k.append("".join(testArray[x:(i)]))
-                        skip = len("".join(testArray[x:(i)]))
+                        if testArray[x-1] == "-":
+                            filler = "".join(testArray[x-1:(i)])
+                            k.append(filler)
+                        else:
+                            k.append("".join(testArray[x:(i)]))
+                        skip = len("".join(testArray[x:(i-1)]))
                         break
 #Combine Constants             
 def combineConstants(k):
@@ -101,7 +105,6 @@ def combineLikeTerms(test, con, variables):
     
     #split up characters
     testArray = list(test)
-
     trackVar(var, varObjects, testArray, k)
     
     #get rid of spaces
@@ -112,13 +115,19 @@ def combineLikeTerms(test, con, variables):
     for i in range(len(varObjects)):
         v = varObjects[i].combineTerms(varObjects[i].groupTerms(test, xterm))
         variables.append(v)
+
 def OneEquation(Leftx, Leftc, Rightx, Rightc):
 	Leftx[0] -= Rightx[0]
 	Rightx[0] -= Rightx[0]
 	Rightc[0] -= Leftc[0]
 	Leftc[0] -= Leftc[0]
-	Rightc[0] = Rightc[0]/Leftx[0]
-	print("Answer is %s" % Rightc[0])
+	try:
+            Rightc[0] = Rightc[0]/Leftx[0]
+        except ZeroDivisionError:
+            print("No solution")
+	else:
+            print("Answer is %s" % Rightc[0])
+
 def TwoEquation(Leftx, Leftc, Rightx, Rightc, Leftx2, Leftc2, Rightx2, Rightc2):
 	Leftx[0] -= Rightx[0]  
 	Leftx[1] -= Rightx[1] 	#Leftx[0] + Leftx[1] = Rightc[0]
@@ -130,18 +139,19 @@ def TwoEquation(Leftx, Leftc, Rightx, Rightc, Leftx2, Leftc2, Rightx2, Rightc2):
 	X_Matrix = Rightc[0] * Leftx2[1] - Leftx[1] * Rightc2[0]
 	Y_Matrix = Leftx[0] * Rightc2[0] - Rightc[0] * Leftx2[0]
 	print("X value is: " + str(X_Matrix/CoeffMatrix) +" Y value is: " + str(Y_Matrix/CoeffMatrix))
-def	Qudratic(Leftx, Leftc, Rightx, Rightc):
+
+def Qudratic(Leftx, Leftc, Rightx, Rightc):
 	Leftx[0] -= Rightx[0]
 	Leftx[1] -= Rightx[1]
 	Leftc[0] -=  Rightc[0]
-	print(Leftx[0], Leftx[1], Leftc[0])
-	if math.sqrt(Leftx[1] * Leftx[1] - 4 * Leftx[0] * Leftc[0]) > 0:
-		if math.sqrt(Leftx[1] * Leftx[1] - 4 * Leftx[0] * Leftc[0]).is_integer():
-			Root = math.sqrt(Leftx[1] * Leftx[1] - 4 * Leftx[0] * Leftc[0])
-		print(str(Root) +" is root")
-		print("Answer is " + str((((-1 * Leftx[1]) + Root) / 2 * Leftx[0])) + " and")
-		print(((-1 * Leftx[1]) - Root) / 2 * Leftx[0])
-	else:
+	print "%dx^2 + %dx + %d = 0" % (Leftx[0], Leftx[1], Leftc[0])
+	try:
+            math.sqrt((Leftx[1] * Leftx[1]) - (4 * Leftx[0] * Leftc[0])) >= 0
+	    Root = math.sqrt(Leftx[1] * Leftx[1] - 4 * Leftx[0] * Leftc[0])
+            print(str(Root) +" is discriminant")
+	    print("Answers are ")
+            print(str(round((((-1 * Leftx[1]) + Root) / (2 * Leftx[0])), 2)) + " and " + str(round(((-1 * Leftx[1]) - Root) / (2* Leftx[0]), 2)))
+	except ValueError:
 		print("No real solutions")
 #------main------
 #declare stuff
@@ -157,8 +167,9 @@ Num = raw_input("How many equations:  ")
 
 if Num == "1":
 	Degree = raw_input("Is it quadratic? Y/N:  ")
-	if Degree == "N":
+	if Degree.upper() == "N":
 		test = raw_input("Enter an equation: ")
+                print(test)
 		testArray = test.split(" = ")
 
 		exp = testArray[0]
@@ -170,8 +181,9 @@ if Num == "1":
 		if leftvar == []:
 			leftvar = [0]
 		OneEquation(leftvar, leftcon, rightvar, rightcon)
-	elif Degree == "Y":
+	elif Degree.upper() == "Y":
 		test = raw_input("Enter an equation:  ")
+                print(test)
 		testArray = test.split(" = ")
 
 		exp = testArray[0]
@@ -188,6 +200,7 @@ if Num == "1":
 elif Num == "2":
 	#First Equation
 	test = raw_input("Enter an equation: ")
+        print(test)
 	testArray = test.split(" = ")
 
 	exp = testArray[0]
@@ -201,6 +214,7 @@ elif Num == "2":
 	print("1st equation", leftvar, leftcon, rightvar, rightcon)
 	#Second Equation
 	test2 = raw_input("Enter another equation:  ")
+        print(test2)
 	testArray2 = test2.split(" = ")
 
 	exp2 = testArray2[0]
