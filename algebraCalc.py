@@ -11,8 +11,18 @@ class Variable():
         return (xterm)
     
     def combineTerms(self, array): #takes [6x, 4x] and makes it 10.0
-        array = [i.split(self.var)[0] for i in array]
-        return sum(float(i) for i in array)
+        array = [s.strip(self.var) for s in array] # seperate var from coeff
+        array = [s.replace(self.var, '') for s in array] # remove var
+        print(array)
+        x = 0
+        for i in range(len(array)):
+            check = True
+            try:
+                x = x + float(array[i])
+            except ValueError:
+                continue
+        print(x)
+        return x 
 
     def rejoin(self, total):
         return str(total) + self.var
@@ -25,12 +35,38 @@ def trackVar(var, varObjects, testArray, k):
     skip = 0
     for x in range(len(testArray)):
         if testArray[x].isalpha(): #check if char is alphabetical
-            if (testArray[x] in var) == False: #don't put same var in twice
-                a = x
-                b = testArray[x] #store char as variable
-                var.append(b)
-                a = Variable(b) #add an object to reference var later
-                varObjects.append(a)
+            if skip != 0:
+                skip = skip - 1 #The skip makes sure it doesn't count 12 as '12' and '2'
+                continue
+            else:
+                i = x
+                while i <= len(testArray):
+                    if testArray[i] != " ":
+                        i = i + 1
+                        try:
+                            testArray[i].isdigit()
+                        except IndexError:
+                            whole = "".join(testArray[x:i])                 
+                            if (whole in var) == False:
+                                a = x
+                                b = whole
+                                print(b)
+                                var.append(b)
+                                a = Variable(b)
+                                varObjects.append(a)
+                                skip = len("".join(testArray[x:(i-1)]))
+                                break
+                    else:    
+                        whole = "".join(testArray[x:i])                 
+                        if (whole in var) == False: #don't put same var in twice
+                            a = x
+                            b = whole #store char as variable
+                            print(b)
+                            var.append(b)
+                            a = Variable(b) #add an object to reference var later
+                            varObjects.append(a)
+                            skip = len("".join(testArray[x:(i-1)]))
+                            break
         if testArray[x].isdigit(): #check if char is constant
             if skip != 0:
                 skip = skip - 1
