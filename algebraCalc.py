@@ -73,7 +73,7 @@ def trackVar(var, varObjects, testArray, k):
                 while i <= len(testArray):
                     if testArray[i].isalpha():
                         break
-                    elif testArray[i].isdigit():
+                    elif testArray[i].isdigit() or testArray[i] == ".":
                         i = i + 1
                         try:
                             testArray[i].isdigit()
@@ -124,7 +124,7 @@ def OneEquation(Leftx, Leftc, Rightx, Rightc):
 	try:
             Rightc[0] = Rightc[0]/Leftx[0]
         except ZeroDivisionError:
-            print("No solution")
+            print("No one solution")
 	else:
             print("Answer is %s" % Rightc[0])
 
@@ -138,7 +138,8 @@ def TwoEquation(Leftx, Leftc, Rightx, Rightc, Leftx2, Leftc2, Rightx2, Rightc2):
 	CoeffMatrix = Leftx[0] * Leftx2[1] - Leftx[1] * Leftx2[0]
 	X_Matrix = Rightc[0] * Leftx2[1] - Leftx[1] * Rightc2[0]
 	Y_Matrix = Leftx[0] * Rightc2[0] - Rightc[0] * Leftx2[0]
-	print("X value is: " + str(X_Matrix/CoeffMatrix) +" Y value is: " + str(Y_Matrix/CoeffMatrix))
+	print("X value is: " + str(X_Matrix/CoeffMatrix))
+        print("Y value is: " + str(Y_Matrix/CoeffMatrix))
 
 def Qudratic(Leftx, Leftc, Rightx, Rightc):
 	Leftx[0] -= Rightx[0]
@@ -155,17 +156,17 @@ def Qudratic(Leftx, Leftc, Rightx, Rightc):
 		print("No real solutions")
 #------main------
 #declare stuff
-leftcon = []
-leftvar = []
-rightcon = []
-rightvar = []
-leftcon2 = []
-leftvar2 = []
-rightcon2 = []
-rightvar2 = []
 retry = 'y'
 print 'Welcome to the Algebra Calculator!'
 while retry.lower() == 'y':
+    leftcon = []
+    leftvar = []
+    rightcon = []
+    rightvar = []
+    leftcon2 = []
+    leftvar2 = []
+    rightcon2 = []
+    rightvar2 = []
     Num = raw_input("How many equations:  ")
 
     if Num == "1":
@@ -214,7 +215,6 @@ while retry.lower() == 'y':
 		rightvar = [0, 0]
 	if leftvar == []:
 		leftvar = [0, 0]
-	print("1st equation", leftvar, leftcon, rightvar, rightcon)
 	#Second Equation
 	test2 = raw_input("Enter another equation:  ")
         print(test2)
@@ -228,7 +228,6 @@ while retry.lower() == 'y':
 		rightvar2 = [0, 0]
 	if leftvar2 == []:
 		leftvar2 = [0, 0]
-	print(leftvar, leftcon, rightvar, rightcon, leftvar2, leftcon2, rightvar2, rightcon2)
 	TwoEquation(leftvar, leftcon, rightvar, rightcon, leftvar2, leftcon2, rightvar2, rightcon2)
     else: 
 	print("Invalid input")
